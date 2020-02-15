@@ -1,0 +1,180 @@
+create database Placar_de_jogo;
+use Placar_de_jogo;
+
+Create table Campeonatos(
+  id bigint primary key,
+  nome varchar(50),
+  descricao varchar(20)
+);
+
+Create table Rodadas(
+  id bigint primary key,
+  descricao varchar(30)
+);
+
+Create table Jogos(
+  id bigint Primary key,
+  data_jg date,
+  gols_mandate int,
+  gols_visitante int
+);
+
+Create table Clubes(
+  id bigint primary key,
+  nome varchar(45),
+  sigla varchar(3),
+  escudo_link varchar(255),
+  qtd_pontos int,
+  qtd_jogos int,
+  qtd_vitorias int,
+  qtd_empate int,
+  qtd_derrota int,
+  gols_feitos int,
+  gols_sofridos int,
+  saldo_de_gols int
+);
+
+Create table Estadios(
+  id bigint primary key,
+  nome varchar(255),
+  cidade varchar(255)
+);
+
+Create table jogadores(
+  id bigint primary key,
+  nome varchar(100),
+  numero_camisa int,
+  dt_nascimento date
+);
+
+Create table Contratos(
+  id bigint primary key,
+  dt_inicio date
+);
+
+Create table Paises(
+  id bigint primary key,
+  nome varchar(50)
+);
+
+Create table Posicoes(
+  id int primary key,
+  descricao varchar(20)
+);  
+
+alter table Jogos add column mandante_id bigint;
+alter table Jogos add column visitante_id bigint;
+alter table Jogos add column rodada_id bigint;
+alter table Jogos add column estadio_id bigint;
+
+alter table Rodadas add column campeonato_id bigint;
+  
+alter table Jogadores add column Pais_id bigint;
+alter table Jogadores add column Posicao_id int;
+
+alter table Contratos add column Jogador_id bigint;
+alter table Contratos add column Clube_id bigint;
+
+alter table Jogos add constraint fk_estadio_id
+foreign key (estadio_id) references Estadios(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Jogos add constraint fk_mandante_id
+foreign key (mandante_id) references Clubes(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Jogos add constraint fk_visitante_id
+foreign key (visitante_id) references Clubes(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Jogos add constraint fk_rodada_id
+foreign key (rodada_id) references Rodadas(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Rodadas add constraint fk_campeonato_id
+foreign key (campeonato_id) references Campeonatos(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Jogadores add constraint fk_Pais_id
+foreign key (Pais_id) references Paises(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Jogadores add constraint fk_Posicao_id
+foreign key (Posicao_id) references Posicoes(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Contratos add constraint fk_Jogador_id
+foreign key (Jogador_id) references Jogadores(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Contratos add constraint fk_Clube_id
+foreign key (Clube_id) references Clubes(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+alter table Campeonatos modify nome varchar(50)not null,
+						modify descricao varchar(20)not null;
+                        
+alter table Rodadas modify descricao varchar(30)not null;
+                        
+alter table Jogos	modify data_jg date not null,
+					modify gols_mandate int not null,
+					modify gols_visitante int not null;
+                    
+alter table clubes  modify nome varchar(45)not null unique,
+					modify sigla varchar(3)not null unique,
+					modify escudo_link varchar(255)not null unique;
+                    
+alter table Estadios  	modify nome varchar(255)not null unique,
+						modify cidade varchar(50)not null;
+
+alter table jogadores modify nome varchar(255)not null unique,
+                      modify numero_camisa bigint not null;
+
+alter table Contratos modify dt_inicio date not null;
+
+alter table Paises modify nome varchar(50) not null unique;
+
+alter table Posicoes modify descricao varchar(20)not null unique; 
+
+insert into Campeonatos (id,nome,descricao) 
+values	(1,'Brasileirão','Série A');
+
+insert into Rodadas (id,descricao,campeonato_id) 
+values	(25,'RODADA 25',1);
+
+insert into Clubes(id,nome,sigla,escudo_link,qtd_pontos,qtd_jogos,qtd_vitorias,
+qtd_empate,qtd_derrota,gols_feitos,gols_sofridos,saldo_de_gols) 
+values	(1,'Fluminense','FLU','link_escudo_flu',53,30,16,8,4,46,31,15),
+		(2,'Palmeiras','PAL','link_escudo_pal',38,30,9,11,10,39,40,-1);
+
+insert into Estadios(id,nome,cidade) 
+values	(10,'Maracanã','Rio de Janeiro');
+
+
+insert into Paises(id,nome) 
+values(1,'Brasil');
+
+insert into Posicoes(id,descricao) 
+values	(1,'ataque'),
+		(2,'gol');  
+        
+insert into jogadores(id,nome,numero_camisa,dt_nascimento,Pais_id,Posicao_id) 
+values	(2,'Fernando Prass',1,'1978-07-09',1,2),
+		(1,'Henrique Dourado',9,'1989-08-15',1,1);
+        
+insert into Jogos(id,data_jg,gols_mandate,gols_visitante,
+mandante_id,visitante_id,rodada_id,estadio_id) 
+values	(1,'2017-09-24',0,1,1,2,25,10);
+
+insert into Contratos(id,dt_inicio,Jogador_id,Clube_id) 
+values	(1,'2016-06-30',1,1),
+		(2,'2012-12-11',2,2);
